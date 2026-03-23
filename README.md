@@ -103,6 +103,10 @@ split = "v"
 
 ---
 
+## Demo
+
+![ctx demo](demo.gif)
+
 ## Contributing
 
 PRs and issues welcome. Keep it focused — `ctx` is intentionally minimal.
