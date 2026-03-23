@@ -35,14 +35,20 @@ func createSession(name, root string, panes []Pane) error {
 			return err
 		}
 
+		split := pane.Split
+		if split == "" {
+			split = "h"
+		}
 		if i == 0 {
 			if pane.Command != "" {
-				exec.Command("tmux", "send-keys", "-t", fmt.Sprintf("%s:0.0", name), pane.Command, "enter").Run()
+				exec.Command("tmux", "send-keys", "-t", fmt.Sprintf("%s:0.0", name), pane.Command, "Enter").Run()
 			}
 			continue
 		}
-
-		exec.Command("tmux", "split-window", "-v", "-t", name, "-c", path).Run()
+		if i > 1 {
+			exec.Command("tmux", "select-pane", "-t", fmt.Sprintf("%s:0.%d", name, i-1)).Run()
+		}
+		exec.Command("tmux", "split-window", "-"+split, "-t", name, "-c", path).Run()
 
 		if pane.Command != "" {
 			exec.Command("tmux", "send-keys", "-t", fmt.Sprintf("%s:0.%d", name, i), pane.Command, "Enter").Run()

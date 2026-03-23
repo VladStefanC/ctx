@@ -14,6 +14,7 @@ type ContextConfig struct {
 type Pane struct {
 	Path    string
 	Command string
+	Split   string
 }
 
 func loadContext(path string) (ContextConfig, error) {
