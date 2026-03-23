@@ -7,7 +7,13 @@ type ContextConfig struct {
 		Name string
 		Root string
 	}
-	Env map[string]string
+	Env   map[string]string
+	Panes []Pane
+}
+
+type Pane struct {
+	Path    string
+	Command string
 }
 
 func loadContext(path string) (ContextConfig, error) {

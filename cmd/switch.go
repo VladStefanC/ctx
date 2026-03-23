@@ -25,13 +25,28 @@ var switchCmd = &cobra.Command{
 
 		config, err := loadContext(configPath)
 		if err != nil {
-			fmt.Fprint(os.Stderr, "could not open load %s context : %v\n", name, err)
+			fmt.Fprintf(os.Stderr, "could not open %s context: %v\n", name, err)
 			os.Exit(1)
 		}
 
 		fmt.Printf("cd %s\n", config.Context.Root)
 		for key, value := range config.Env {
 			fmt.Printf("export %s=%s\n", key, value)
+		}
+		if !sessionExists(name) {
+			root, err := expandPath(config.Context.Root)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "could not expand path:", err)
+				os.Exit(1)
+			}
+			if err := createSession(name, root, config.Panes); err != nil {
+				fmt.Fprintln(os.Stderr, "could not create tmux session", err)
+				os.Exit(1)
+			}
+		}
+		if err := attachSession(name); err != nil {
+			fmt.Fprintln(os.Stderr, "could not attach tmux session:", err)
+			os.Exit(1)
 		}
 	},
 }
