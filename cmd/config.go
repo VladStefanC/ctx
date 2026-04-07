@@ -1,20 +1,24 @@
 package cmd
 
-import "github.com/BurntSushi/toml"
+import (
+	"github.com/BurntSushi/toml"
+)
+
+type Context struct {
+	Name string `toml:"name"`
+	Root string `toml:"root"`
+}
 
 type ContextConfig struct {
-	Context struct {
-		Name string
-		Root string
-	}
-	Env   map[string]string
-	Panes []Pane
+	Context Context           `toml:"context"`
+	Env     map[string]string `toml:"env"`
+	Panes   []Pane            `toml:"panes"`
 }
 
 type Pane struct {
-	Path    string
-	Command string
-	Split   string
+	Path    string `toml:"path"`
+	Command string `toml:"command"`
+	Split   string `toml:"split"`
 }
 
 func loadContext(path string) (ContextConfig, error) {
