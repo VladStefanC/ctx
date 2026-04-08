@@ -20,8 +20,10 @@ var initCmd = &cobra.Command{
 		var ctxName string
 		var addMore bool
 		var addPanes bool
+		var addService bool
 		envVars := make(map[string]string)
 		panes := []Pane{}
+		services := []Service{}
 
 		huh.NewInput().Title("Initializing context setup").Placeholder("*context name*").Value(&ctxName).Run()
 		huh.NewInput().Title("Root directory: ").Placeholder(path).Value(&root).Run()
@@ -61,14 +63,33 @@ var initCmd = &cobra.Command{
 				Command: command,
 				Split:   split,
 			})
+
+		}
+
+		for {
+
+			var serviceName string
+			var service string
+			huh.NewConfirm().Title("Do you want to add services you wanna check ?").Value(&addService).Run()
+			if !addService {
+				break
+			}
+			huh.NewInput().Title("Add Service name ").Placeholder("Postgres check").Value(&serviceName).Run()
+			huh.NewInput().Title("Add service command").Placeholder("ex: is_psqlready").Value(&service).Run()
+			services = append(services, Service{
+				Name:  serviceName,
+				Check: service,
+			})
+
 		}
 		config := ContextConfig{
 			Context: Context{
 				Name: ctxName,
 				Root: root,
 			},
-			Env:   envVars,
-			Panes: panes,
+			Env:      envVars,
+			Panes:    panes,
+			Services: services,
 		}
 
 		home, _ := os.UserHomeDir()

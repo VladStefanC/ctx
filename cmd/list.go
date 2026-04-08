@@ -14,7 +14,7 @@ var listCmd = &cobra.Command{
 	Short: "List all available project contexts",
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, _ []string) {
-		fmt.Printf("Listing all available contexts:\n")
+		fmt.Printf(Title.Render("Listing all available contexts:\n"))
 		home, err := os.UserHomeDir()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "could not find home directory", err)
@@ -30,7 +30,19 @@ var listCmd = &cobra.Command{
 		for _, entry := range entries {
 			if filepath.Ext(entry.Name()) == ".toml" {
 				name := strings.TrimSuffix(entry.Name(), ".toml")
-				fmt.Println(name)
+				configPath := filepath.Join(contextsDir, entry.Name())
+				config, _ := loadContext(configPath)
+				serviceCount := len(config.Services)
+				icon := "○"
+
+				serviceText := "no services"
+				if serviceCount > 0 {
+					icon = "●"
+					serviceText = fmt.Sprintf("%d services", serviceCount)
+				}
+
+				fmt.Printf("%s %s (%s)\n", icon, Title.Render(name), Dim.Render(serviceText))
+
 			}
 		}
 	},

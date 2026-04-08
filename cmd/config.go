@@ -10,9 +10,20 @@ type Context struct {
 }
 
 type ContextConfig struct {
-	Context Context           `toml:"context"`
-	Env     map[string]string `toml:"env"`
-	Panes   []Pane            `toml:"panes"`
+	Context  Context           `toml:"context"`
+	Env      map[string]string `toml:"env"`
+	Panes    []Pane            `toml:"panes"`
+	Services []Service         `toml:"services"`
+}
+
+type Service struct {
+	Name  string `toml:"name"`
+	Check string `toml:"check"`
+}
+
+type ServiceResult struct {
+	Name    string `toml:"name"`
+	Running bool   `toml:"running"`
 }
 
 type Pane struct {
